@@ -1,0 +1,91 @@
+/*
+ 43-字符串相乘
+ 字符串模拟乘法，没什么难度，注意进位细节
+ 另外还涉及到两个字符串相加，也要注意进位
+ 
+ */
+class Solution {
+    
+    func multiply(_ num1: String, _ num2: String) -> String {
+        if (num1.count == 0 || num2.count == 0) {
+            return "0"
+        }
+        
+        if (num1 == "0" || num2 == "0") {
+            return "0"
+        }
+        
+        let array1 = Array(num1)
+        let array2 = Array(num2)
+        
+        let zero: Character = "0"
+        
+        var preStr = ""
+        var zeroCnt = 0
+        for char1 in array1.reversed(){
+            let num1 = Int(char1.asciiValue! - zero.asciiValue!)
+            var digit = 0
+            var oneStr = ""
+            for char2 in array2.reversed() {
+                let num2 = Int(char2.asciiValue! - zero.asciiValue!)
+                let result = num1 * num2 + digit
+                
+                digit = result / 10
+                oneStr =  String(result % 10) + oneStr
+            }
+            if(digit > 0){
+                oneStr = String(digit) + oneStr
+            }
+            oneStr = oneStr + String(repeating: "0", count: zeroCnt)
+            
+            preStr = addTwoStrs(oneStr, preStr)
+            zeroCnt += 1
+        }
+        
+        return preStr
+    }
+    
+    
+    
+    func addTwoStrs(_ nowStr: String, _ preStr: String) -> String{
+        if(nowStr.count == 0){
+            return preStr;
+        }
+        if(preStr.count == 0) {
+            return nowStr;
+        }
+        
+        let array1 = Array(nowStr)
+        let array2 = Array(preStr)
+        var oneIndex = array1.count - 1
+        var twoIndex = array2.count - 1
+        let zero: Character = "0"
+        
+        var digit = 0
+        var ans = ""
+        while(oneIndex >= 0 && twoIndex >= 0){
+            let oneValue = Int(array1[oneIndex].asciiValue! - zero.asciiValue!)
+            let twoValue = Int(array2[twoIndex].asciiValue! - zero.asciiValue!)
+            let sum = oneValue + twoValue + digit
+            ans = String(sum % 10) + ans
+            digit = sum / 10
+            oneIndex -= 1
+            twoIndex -= 1
+        }
+        
+        while (oneIndex >= 0){
+            let oneValue = Int(array1[oneIndex].asciiValue! - zero.asciiValue!)
+            let sum = oneValue + digit
+            ans = String(sum % 10) + ans
+            digit = sum / 10
+            oneIndex -= 1
+        }
+        if (digit > 0){
+            ans = String(digit) + ans
+        }
+        return ans
+    }
+}
+
+var solution = Solution()
+print(solution.multiply("123", "456"))
